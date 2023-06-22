@@ -101,6 +101,10 @@ class UserController {
     try {
       const { id } = req.params;
       const { username } = req.body;
+      console.log("<<<<<<<", username);
+      if (!username) {
+        throw { name: "notFound" };
+      }
 
       const findUser = await User.findByPk(id);
       if (!findUser) {
