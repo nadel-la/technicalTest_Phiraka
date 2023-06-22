@@ -59,6 +59,20 @@ class UserController {
       }
     }
   }
+
+  static async fetchUsers(req, res) {
+    try {
+      let getUsers = await User.findAll({
+        attributes: {
+          exclude: ["password"],
+        },
+      });
+      res.status(200).json(getUsers);
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  }
 }
 
 module.exports = UserController;

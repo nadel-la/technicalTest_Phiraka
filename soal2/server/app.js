@@ -11,6 +11,7 @@ app.use(express.json());
 
 app.post("/register", UserController.register);
 app.post("/login", UserController.login);
+app.get("/", UserController.fetchUsers);
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
