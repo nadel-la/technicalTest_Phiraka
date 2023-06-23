@@ -5,7 +5,8 @@ const baseUrl = `http://localhost:3000`
 export const useMainStore = defineStore('main', {
   state: () => {
     return {
-      users: []
+      users: [],
+      captcha: null
     }
   },
   actions: {
@@ -31,8 +32,13 @@ export const useMainStore = defineStore('main', {
       }
     },
 
-    async login(username, password) {
+    async login(username, password, captchaVerif) {
+      console.log(username, password, captchaVerif, '<<<')
       try {
+        const { text } = this.captcha
+        if (text != captchaVerif) {
+          throw { name: 'invalidCaptcha' }
+        }
         let { data } = await axios({
           method: 'post',
           url: `${baseUrl}/login`,
@@ -45,8 +51,13 @@ export const useMainStore = defineStore('main', {
         this.router.push('/')
         this.$toast.success('Login successfully')
       } catch (error) {
-        this.$toast.error(error.response.data.message)
-        console.log('Error during login:', error.response.data.message)
+        if (error.name === 'invalidCaptcha') {
+          this.$toast.error('Captcha is Invalid')
+          return console.log('Error during login:', 'Captcha is Invalid')
+        } else {
+          this.$toast.error(error.response.data.message)
+          console.log('Error during login:', error.response.data.message)
+        }
       }
     },
 
@@ -100,6 +111,18 @@ export const useMainStore = defineStore('main', {
         this.fetchUsers()
         // console.log(data, '<< editUser')
         this.router.push('/')
+      } catch (error) {
+        console.log(error)
+      }
+    },
+
+    async loadCaptcha() {
+      try {
+        const { data } = await axios({
+          method: 'get',
+          url: `${baseUrl}/captcha`
+        })
+        this.captcha = data
       } catch (error) {
         console.log(error)
       }

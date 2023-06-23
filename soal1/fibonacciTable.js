@@ -29,5 +29,5 @@ function fibonacciTable(rows, columns) {
 }
 
 let rows = 2;
-let columns = 4;
+let columns = 10;
 console.log(fibonacciTable(rows, columns));
